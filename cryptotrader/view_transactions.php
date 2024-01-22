@@ -3,7 +3,7 @@ include_once 'config/db_config.php';
 
 // Fetch transactions from the database
 $query = "SELECT * FROM transactions";
-$conn = mysqli_connect($server,$user, $pswd, $db);
+$conn = mysqli_connect($server, $user, $pswd, $db);
 $result = $conn->query($query);
 
 echo '<!DOCTYPE html>
@@ -32,8 +32,10 @@ if ($result->num_rows > 0) {
             </thead>
             <tbody>";
 
-    // Output data of each row
-    while ($row = $result->fetch_assoc()) {
+    // Output data of each row in reverse order
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
+    $rows = array_reverse($rows);
+    foreach ($rows as $row) {
         echo "<tr>
                 <td>{$row['sender']}</td>
                 <td>{$row['receiver']}</td>
@@ -50,7 +52,8 @@ if ($result->num_rows > 0) {
     echo "<p class='mt-4'>No transactions found.</p>";
     echo "<a href='index.html' class='btn btn-secondary mt-2'>Home</a>";
 }
-'</body>
+
+echo '</body>
 </html>';
 
 // Close the database connection
