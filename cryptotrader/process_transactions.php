@@ -64,6 +64,8 @@ class Blockchain {
     }
 
     public function addToDatabase($sender, $receiver, $amount, $crypto) {
+        
+        // Calculate the hash for the new transaction by taking the hash of the latest block in the blockchain
         $hash = $this->calculateHash(end($this->chain));
 
         $sql = "INSERT INTO transactions (sender, receiver, amount, timestamp, hash, crypto) VALUES ('$sender', '$receiver', $amount, NOW(), '$hash', '$crypto')";
