@@ -2,7 +2,8 @@
 include_once 'config/db_config.php';
 $conn = mysqli_connect($server, $user, $pswd, $db);
 
-class Block {
+class Block
+{
     public $index;
     public $previousHash;
     public $timestamp;
@@ -10,14 +11,17 @@ class Block {
     public $hash;
 }
 
-class Blockchain {
+class Blockchain
+{
     private $chain = [];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->createGenesisBlock();
     }
 
-    private function createGenesisBlock() {
+    private function createGenesisBlock()
+    {
         $genesisBlock = new Block();
         $genesisBlock->index = 0;
         $genesisBlock->previousHash = '0';
@@ -28,12 +32,14 @@ class Blockchain {
         $this->chain[] = $genesisBlock;
     }
 
-    private function calculateHash($block) {
+    private function calculateHash($block)
+    {
         $data = $block->index . $block->previousHash . $block->timestamp . $block->data;
         return hash('sha256', $data);
     }
 
-    public function addBlock($data) {
+    public function addBlock($data)
+    {
         $block = new Block();
         $block->index = end($this->chain)->index + 1;
         $block->previousHash = end($this->chain)->hash;
@@ -44,7 +50,8 @@ class Blockchain {
         $this->chain[] = $block;
     }
 
-    public function isValid() {
+    public function isValid()
+    {
         for ($i = 1; $i < count($this->chain); $i++) {
             $currentBlock = $this->chain[$i];
             $previousBlock = $this->chain[$i - 1];
@@ -63,8 +70,9 @@ class Blockchain {
         return true;
     }
 
-    public function addToDatabase($sender, $receiver, $amount, $crypto) {
-        
+    public function addToDatabase($sender, $receiver, $amount, $crypto)
+    {
+
         // Calculate the hash for the new transaction by taking the hash of the latest block in the blockchain
         $hash = $this->calculateHash(end($this->chain));
 
@@ -95,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error: Blockchain is not valid.";
         exit();
     }
-    
+
     // Add a block to the blockchain
     $blockchain->addBlock($timestamp . $sender . $amount . $crypto . $receiver);
 
@@ -105,13 +113,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>
                 setTimeout(function() {
                     window.location.href = 'index.html';
-                }, 3000);
+                }, 1000);
               </script>";
-        exit(); 
+        exit();
     } else {
         echo "Error: Database insertion failed.";
     }
 }
 // Close the database connection
 $conn->close();
-?>
